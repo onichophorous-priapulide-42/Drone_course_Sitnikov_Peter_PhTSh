@@ -1,0 +1,3 @@
+import cv2
+img = cv2.imread("C:/Drones_course/Graph_dop_vel.PNG")
+cv2.imshow("Image Window", img)
