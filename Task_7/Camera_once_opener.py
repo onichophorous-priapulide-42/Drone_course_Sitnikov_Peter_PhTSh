@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
 
-prison = cv2.capture(0)
+prison = cv2.VideoCapture(0)
 t, frame = prison.read()
-imshow(frame)
+cv2.imshow("Shoot", frame)
 while True:
-    key = cv2.waitkey(0)
+    key = cv2.waitKey(0)
     if key == 27:
-       prison.release()
+        prison.release()
+        cv2.destroyAllWindows()
         break
