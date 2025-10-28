@@ -5,7 +5,7 @@ prison = cv2.VideoCapture(0)
 try:
     while True:
         t, frame = prison.read()
-        cv2.imshow("Camera_Machine", cv2.cvtColor(frame, 6))
+        cv2.imshow("Camera_Machine", frame)
         cv2.waitKey(1)
 finally:
     cv2.destroyAllWindows()
