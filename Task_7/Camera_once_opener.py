@@ -8,5 +8,8 @@ while True:
     key = cv2.waitKey(0)
     if key == 27:
         prison.release()
+<<<<<<< HEAD
         cv2.destroyAllWindows()
+=======
+>>>>>>> Just
         break
