@@ -1,14 +1,20 @@
 import cv2
 import numpy as np
 from pioneer_sdk import Pioneer
+from pioneer_sdk import Camera
 
 drone = Pioneer()
 
-window = np.zeros((500, 800, 3))
-cv2.putText(window, "It's window, where you can manipulate your drone", [0, 250], cv2.FONT_HERSHEY_SIMPLEX,1,[255,255,255],1)
-cv2.imshow("Flight remote", window)
+cam = Camera()
+
+def look():
+    img = cam.get_cv_frame()
+    if img is not None:
+        cv2.imshow("Drone camera", img)
+    key = cv2.waitKey(1)
 
 def takeoff(Hup):
+    look()
     old = -1
     h = drone.get_dist_sensor_data(get_last_received=True)
     while h < Hup:
@@ -24,9 +30,10 @@ def takeoff(Hup):
     return [0, 1500]
 
 def land():
+    look()
     h = drone.get_dist_sensor_data(get_last_received=True)
     while h > 0.03:
-        ch_1 = 1500 - int((100*(h))) - 100
+        ch_1 = 1500 - int((100*(h))) - 200
         ch_2 = 1500
         ch_3 = 1500
         ch_4 = 1500
@@ -42,6 +49,7 @@ def land():
     return [0, 1500]
 
 def fd():
+    look()
     ch_1 = 1500
     ch_2 = 1500
     ch_3 = 1200
@@ -51,6 +59,7 @@ def fd():
     return [3, 2000]
 
 def bk():
+    look()
     ch_1 = 1500
     ch_2 = 1500
     ch_3 = 1800
@@ -60,6 +69,7 @@ def bk():
     return [3, 1000]
 
 def rt():
+    look()
     ch_1 = 1500
     ch_2 = 1500
     ch_3 = 1500
@@ -69,6 +79,7 @@ def rt():
     return [4, 1000]
 
 def lt():
+    look()
     ch_1 = 1500
     ch_2 = 1500
     ch_3 = 1500
@@ -78,6 +89,7 @@ def lt():
     return [4, 2000]
 
 def ro_rt():
+    look()
     ch_1 = 1500
     ch_2 = 1200
     ch_3 = 1500
@@ -87,6 +99,7 @@ def ro_rt():
     return [0, 1500]
 
 def ro_lt():
+    look()
     ch_1 = 1500
     ch_2 = 1800
     ch_3 = 1500
@@ -96,6 +109,7 @@ def ro_lt():
     return [0, 1500]
 
 def up():
+    look()
     ch_1 = 2000
     ch_2 = 1500
     ch_3 = 1500
@@ -105,6 +119,7 @@ def up():
     return [0, 1500]
 
 def down():
+    look()
     ch_1 = 1200
     ch_2 = 1500
     ch_3 = 1500
@@ -113,9 +128,7 @@ def down():
     drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [0, 1500]
 
-is_armed = False
-
-for i in range(0, 100):
+def stay():
     ch_1 = 1500
     ch_2 = 1500
     ch_3 = 1500
@@ -123,12 +136,18 @@ for i in range(0, 100):
     ch_5 = 2000
     drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
 
+is_armed = False
+
+for i in range(0, 100):
+    stay()
+
 f = [0, 1500]
 
-try:
+try:      
     #drone.arm()
     #takeoff(1)
     while True:
+        look()
         key = cv2.waitKey(1)
         if key == 27:
             cv2.destroyAllWindows()
@@ -166,23 +185,7 @@ try:
             elif key == ord("-"):
                 f = down()
             else:
-                ch_1 = 1500
-                ch_2 = 1500
-                '''
-                if f[0] == 3:
-                    ch_3 = f[1]
-                else:
-                    ch_3 = 1500
-                if f[0] == 4:
-                    ch_4 = f[1]
-                else:
-                    ch_4 = 1500
-                '''
-                ch_3 = 1500
-                ch_4 = 1500
-                ch_5 = 2000
-                drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
-                f = [0, 1500]
+                stay()
         else:
             pass            
            
@@ -190,3 +193,5 @@ except KeyboardInterrupt:
     drone.land()
     drone.disarm()
     cv2.destroyAllWindows()
+
+cv2.destroyAllWindows()
