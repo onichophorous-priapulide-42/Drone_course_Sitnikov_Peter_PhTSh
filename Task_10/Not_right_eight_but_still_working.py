@@ -1,5 +1,6 @@
 import numpy as np
 from pioneer_sdk import Pioneer
+import math
 drone = Pioneer()
 
 def takeoff(Hup):
@@ -20,8 +21,12 @@ def takeoff(Hup):
             return takeoff(Hup)
     return [0, 1500]
 
+t = 20000
+
+tmp = []
+
 try:
-    for i in range(0, 1000):
+    for i in range(0, 5000):
         ch_1 = 1500
         ch_2 = 1500
         ch_3 = 1500
@@ -30,21 +35,26 @@ try:
         drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     drone.arm()
     takeoff(1)
-    while True:
-        ch_1 = 1500
-        ch_2 = 1800
-        ch_3 = 1700
-        ch_4 = 1500
-        ch_5 = 2000
-        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
-        '''
-        ch_1 = 1500
-        ch_2 = 1500
-        ch_3 = 1500
-        ch_4 = 1500
-        ch_5 = 2000
-        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
-        '''
+    for i in range(0, 1):
+        
+        for i in range(0, t):
+            ch_1 = 1500
+            ch_2 = 1300
+            ch_3 = 1300
+            ch_4 = 1500
+            ch_5 = 2000
+            drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+        for i in range(0, t):
+            ch_1 = 1500
+            ch_2 = 1300
+            ch_3 = 1700
+            ch_4 = 1500
+            ch_5 = 2000
+            drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+        
+        
+    KeyboardInterrupt
+
 except KeyboardInterrupt:
     drone.land()
-    drone.disarm()
+    print(tmp)

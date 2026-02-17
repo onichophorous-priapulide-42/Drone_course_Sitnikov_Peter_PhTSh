@@ -9,7 +9,7 @@ cv2.putText(window, "It's window, where you can manipulate your drone", [0, 250]
 cv2.imshow("Flight remote", window)
 
 def takeoff(Hup):
-    old = -1
+    old = 0
     h = drone.get_dist_sensor_data(get_last_received=True)
     while h < Hup:
         ch_1 = 1500 + int((300*(Hup-h)/(Hup)))+100
@@ -21,12 +21,15 @@ def takeoff(Hup):
         ch_5 = 2000
         drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
         h = drone.get_dist_sensor_data(get_last_received=True)
+        old += 1
+        if old >= 1000:
+            return takeoff(Hup)
     return [0, 1500]
 
 def land():
     h = drone.get_dist_sensor_data(get_last_received=True)
     while h > 0.03:
-        ch_1 = 1500 - int((100*(h))) - 100
+        ch_1 = 1500 - int((100*(h))) - 150
         ch_2 = 1500
         ch_3 = 1500
         ch_4 = 1500
@@ -41,58 +44,66 @@ def land():
     drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [0, 1500]
 
+sens = 5
+
 def fd():
-    ch_1 = 1500
-    ch_2 = 1500
-    ch_3 = 1200
-    ch_4 = 1500
-    ch_5 = 2000
-    drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+    for i in range(0, sens):
+        ch_1 = 1500
+        ch_2 = 1500
+        ch_3 = 1200
+        ch_4 = 1500
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [3, 2000]
 
 def bk():
-    ch_1 = 1500
-    ch_2 = 1500
-    ch_3 = 1800
-    ch_4 = 1500
-    ch_5 = 2000
-    drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+    for i in range(0, sens):
+        ch_1 = 1500
+        ch_2 = 1500
+        ch_3 = 1800
+        ch_4 = 1500
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [3, 1000]
 
 def rt():
-    ch_1 = 1500
-    ch_2 = 1500
-    ch_3 = 1500
-    ch_4 = 1800
-    ch_5 = 2000
-    drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+    for i in range(0, sens):
+        ch_1 = 1500
+        ch_2 = 1500
+        ch_3 = 1500
+        ch_4 = 1800
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [4, 1000]
 
 def lt():
-    ch_1 = 1500
-    ch_2 = 1500
-    ch_3 = 1500
-    ch_4 = 1200
-    ch_5 = 2000
-    drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+    for i in range(0, sens):
+        ch_1 = 1500
+        ch_2 = 1500
+        ch_3 = 1500
+        ch_4 = 1200
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [4, 2000]
 
 def ro_rt():
-    ch_1 = 1500
-    ch_2 = 1200
-    ch_3 = 1500
-    ch_4 = 1500
-    ch_5 = 2000
-    drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+    for i in range(0, sens):
+        ch_1 = 1500
+        ch_2 = 1200
+        ch_3 = 1500
+        ch_4 = 1500
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [0, 1500]
 
 def ro_lt():
-    ch_1 = 1500
-    ch_2 = 1800
-    ch_3 = 1500
-    ch_4 = 1500
-    ch_5 = 2000
-    drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
+    for i in range(0, sens):
+        ch_1 = 1500
+        ch_2 = 1800
+        ch_3 = 1500
+        ch_4 = 1500
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [0, 1500]
 
 def up():
@@ -112,6 +123,16 @@ def down():
     ch_5 = 2000
     drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
     return [0, 1500]
+
+t = 10
+def circle(t):
+    for i in range(0, t):
+        ch_1 = 1500
+        ch_2 = 1800
+        ch_3 = 1700
+        ch_4 = 1500
+        ch_5 = 2000
+        drone.send_rc_channels(ch_1, ch_2, ch_3, ch_4, ch_5)
 
 is_armed = False
 
@@ -165,6 +186,8 @@ try:
                 f = up()
             elif key == ord("-"):
                 f = down()
+            elif key == ord("`"):
+                circle(t)
             else:
                 ch_1 = 1500
                 ch_2 = 1500
